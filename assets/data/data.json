@@ -1,0 +1,43 @@
+[
+    {
+      "id": 1,
+      "name": "Appetizer",
+      "checked": false
+    },
+    {
+      "id": 2,
+      "name": "Main",
+      "checked": false
+    },
+    {
+      "id": 3,
+      "name": "Desserts",
+      "checked": false
+    },
+    {
+        "id": 4,
+        "name": "Starters",
+        "checked": false
+    },
+    {
+        "id": 5,
+        "name": "Sides",
+        "checked": false
+    },
+    {
+        "id": 6,
+        "name": "Continental",
+        "checked": false
+    },
+    {
+        "id": 7,
+        "name": "Indian",
+        "checked": false
+    },
+    {
+        "id": 8,
+        "name": "Chineese",
+        "checked": false
+    }
+
+]
