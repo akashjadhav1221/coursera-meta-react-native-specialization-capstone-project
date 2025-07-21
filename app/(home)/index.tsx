@@ -1,11 +1,21 @@
 import { StyleSheet, Text, View, Image } from 'react-native';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Categories from '../../Components/Categories';
 import colors from '../../constants/colors';
 import FoodItems from '../../Components/FoodItems';
+import { useNavigation } from 'expo-router';
+import TopHeader from '../../Components/TopHeader';
 
 export default function Index() {
+
+    const navigation = useNavigation();
+
+    useLayoutEffect(() => {
+            navigation.setOptions({
+                  header: () => <TopHeader/>
+            });
+    }, []);
 
     return (
         <SafeAreaView style={styles.container}>

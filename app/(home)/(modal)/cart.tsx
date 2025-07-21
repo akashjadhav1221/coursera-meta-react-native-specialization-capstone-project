@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
-import { Link, useNavigation } from 'expo-router'
+import { useNavigation } from 'expo-router'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import colors from '../../../constants/colors';
 import useCartStore from '../../../store/cartStore';
@@ -14,6 +14,10 @@ const Cart = () => {
     const { items, total, products, addProduct, reduceProduct, clearCart } = useCartStore();
     const [order, setOrder] = useState(false); 
     const navigation = useNavigation();
+
+    const handleBack = () => {
+        navigation.goBack();
+    }
 
     const placeOrder = () => {
         setOrder(true);
@@ -59,11 +63,9 @@ const Cart = () => {
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Ionicons name='checkmark-done-circle-outline' size={48} color={ colors.primary }/>
             <Animated.Text entering={FadeInDown.duration(500).delay(300)} style={{fontSize: 18, color: colors.primary}}>Order Placed Succesfully!</Animated.Text>
-            <Link href={'/'} asChild>
-                 <TouchableOpacity style={styles.btn}>
+                 <TouchableOpacity style={styles.btn} onPress={handleBack}>
                 <Text style={styles.btnTxt}>Home</Text>
                 </TouchableOpacity>
-            </Link>
         </View>
         </>
       ) : ( (!order && !items) ? (
