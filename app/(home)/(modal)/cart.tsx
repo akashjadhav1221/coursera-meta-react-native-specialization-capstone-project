@@ -12,7 +12,7 @@ import ConfettiCannon from 'react-native-confetti-cannon';
 
 const Cart = () => {
     const { items, total, products, addProduct, reduceProduct, clearCart } = useCartStore();
-    const [order, setOrder] = useState(false); 
+    const [order, setOrder] = useState(false);
     const navigation = useNavigation();
 
     const handleBack = () => {
@@ -33,84 +33,84 @@ const Cart = () => {
             Haptics.NotificationFeedbackType.Error
         )
     }
-    
+
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: 'Cart',
             headerTitleStyle: {
                 fontSize: 18,
                 fontWeight: 'bold',
-              },
-              headerLeft: () => (
-                  <TouchableOpacity onPress={() => ( navigation.goBack() )}>
-                      <Ionicons name='arrow-back' size={28} color={ colors.primary }/>
-                  </TouchableOpacity>
-              )
+            },
+            headerLeft: () => (
+                <TouchableOpacity onPress={() => (navigation.goBack())}>
+                    <Ionicons name='arrow-back' size={28} color={colors.primary} />
+                </TouchableOpacity>
+            )
         });
     }, []);
 
-  return (
-   <>
-    {
-      order ? (
+    return (
         <>
-         <ConfettiCannon
-        count={200}
-        origin={{x: -10, y: 0}}
-        autoStart={true}
-        fallSpeed={2500}
-         />
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <Ionicons name='checkmark-done-circle-outline' size={48} color={ colors.primary }/>
-            <Animated.Text entering={FadeInDown.duration(500).delay(300)} style={{fontSize: 18, color: colors.primary}}>Order Placed Succesfully!</Animated.Text>
-                 <TouchableOpacity style={styles.btn} onPress={handleBack}>
-                <Text style={styles.btnTxt}>Home</Text>
-                </TouchableOpacity>
-        </View>
+            {
+                order ? (
+                    <>
+                        <ConfettiCannon
+                            count={200}
+                            origin={{ x: -10, y: 0 }}
+                            autoStart={true}
+                            fallSpeed={2500}
+                        />
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                            <Ionicons name='checkmark-done-circle-outline' size={48} color={colors.primary} />
+                            <Animated.Text entering={FadeInDown.duration(500).delay(300)} style={{ fontSize: 18, color: colors.primary }}>Order Placed Succesfully!</Animated.Text>
+                            <TouchableOpacity style={styles.btn} onPress={handleBack}>
+                                <Text style={styles.btnTxt}>Home</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                ) : ((!order && !items) ? (
+
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Ionicons name='pizza-outline' size={48} color={colors.primary} />
+                        <Animated.Text entering={FadeInDown.duration(500).delay(300)} style={{ fontSize: 18, color: colors.primary }}>Wow such a empty cart!</Animated.Text>
+                    </View>
+
+                ) : (!order && items) ? (
+                    <>
+                        <FlatList
+                            data={products}
+                            keyExtractor={item => (item.id + Math.random() * 100).toString()}
+                            ItemSeparatorComponent={() => <View></View>}
+                            ListHeaderComponent={() => <View style={{ padding: 10 }}><Text style={styles.headerTxt}>Items in your Cart</Text></View>}
+                            ListFooterComponent={() => <View><View style={styles.footer}><Text style={styles.headerTxt}>Subtotal</Text><Text style={styles.headerTxt}>$ {total.toFixed(2).toString()}</Text></View></View>}
+                            renderItem={({ item }) => (
+                                <View style={styles.itemContainer}>
+                                    <Text style={styles.qty}>{item.quantity.toString()}x</Text>
+                                    <Text style={styles.name}>{item.name}</Text>
+                                    <View style={styles.rightSection}>
+                                        <Text style={styles.price}>$ {item.price.toFixed(2).toString()}</Text>
+                                        <TouchableOpacity onPress={() => {
+                                            reduceProduct(item)
+                                        }}>
+                                            <Ionicons name='trash' size={24} color={'red'} />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            )}
+                        />
+                        <View style={styles.btnContainer}>
+                            <TouchableOpacity style={styles.btn1} onPress={clear}>
+                                <Text style={styles.btnTxt}>Clear Cart</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.btn} onPress={placeOrder}>
+                                <Text style={styles.btnTxt}>Order Now</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                ) : (<></>))
+            }
         </>
-      ) : ( (!order && !items) ? (
-
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Ionicons name='pizza-outline' size={48} color={ colors.primary }/>
-        <Animated.Text entering={FadeInDown.duration(500).delay(300)} style={{fontSize: 18, color: colors.primary}}>Wow such a empty cart!</Animated.Text>
-        </View>
-
-      ) : (!order && items) ? (
-        <>
-        <FlatList 
-            data={products} 
-            keyExtractor={item => (item.id + Math.random() * 100).toString()}
-            ItemSeparatorComponent={() => <View></View> }
-            ListHeaderComponent={() =>  <View style={{padding: 10}}><Text style={styles.headerTxt}>Items in your Cart</Text></View> }
-            ListFooterComponent={() => <View><View style={styles.footer}><Text style={styles.headerTxt}>Subtotal</Text><Text style={styles.headerTxt}>$ {total.toFixed(2).toString()}</Text></View></View>}
-            renderItem={({item}) => (
-             <View style={styles.itemContainer}>
-                 <Text style={styles.qty}>{item.quantity.toString()}x</Text>
-                 <Text style={styles.name}>{item.name}</Text>
-                 <View style={styles.rightSection}>
-                     <Text style={styles.price}>$ {item.price.toFixed(2).toString()}</Text>
-                     <TouchableOpacity onPress={() => {
-                        reduceProduct(item)
-                     }}>
-                     <Ionicons name='trash' size={24} color={ 'red' }/>
-                     </TouchableOpacity>
-                 </View>
-             </View>
-         )} 
-        />
-        <View style={styles.btnContainer}>
-        <TouchableOpacity style={styles.btn1} onPress={clear}>
-            <Text style={styles.btnTxt}>Clear Cart</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.btn} onPress={placeOrder}>
-            <Text style={styles.btnTxt}>Order Now</Text>
-        </TouchableOpacity>
-         </View>
-     </>
-      ) : (<></>) )
-    }
-   </>
-  )
+    )
 }
 
 const styles = StyleSheet.create({
@@ -156,8 +156,8 @@ const styles = StyleSheet.create({
         padding: 10
     },
     headerTxt: {
-        fontSize: 20, 
-        fontWeight: 'bold', 
+        fontSize: 20,
+        fontWeight: 'bold',
         color: colors.primary
     },
     btnContainer: {
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
         bottom: 20,
         width: '100%'
     },
-      btn: {
+    btn: {
         backgroundColor: colors.secondary,
         padding: 16,
         margin: 8,

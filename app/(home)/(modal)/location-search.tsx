@@ -12,60 +12,60 @@ const LocationSearch = () => {
             longitude: 73.878624,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
-          }
+        }
     );
     const navigation = useNavigation();
     const handleBack = () => {
         navigation.goBack();
     }
-    
+
     useLayoutEffect(() => {
         navigation.setOptions({
-             headerLeft: () => (
-                      <TouchableOpacity onPress={handleBack}>
-                          <Ionicons name='close-outline' size={28} color={'lightskyblue'}/>
-                      </TouchableOpacity>
-                  )
+            headerLeft: () => (
+                <TouchableOpacity onPress={handleBack}>
+                    <Ionicons name='close-outline' size={28} color={'lightskyblue'} />
+                </TouchableOpacity>
+            )
         })
     }, []);
 
     return (
         <View style={styles.container}>
-        <GooglePlacesAutocomplete
-        placeholder='Search'
-        fetchDetails={true}
-        onPress={(data, details) => {
-            const point = details.geometry.location
-            console.log('POINT - ', point);
-            if (!point) { return };
-            setLocation({
-                ...location,
-                latitude: point.lat,
-                longitude: point.lng
-            });
-        console.log(data, details);
-      }}
-      query={{
-        key: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
-        language: 'en',
-      }}
-      styles={{
-        container: {
-            flex: 0
-        },
-        textInput: {
-            backgroundColor: 'whitesmoke',
-            borderRadius: 10
-        },
-        textInputContainer: {
-            backgroundColor: 'white',
-            padding: 4,
-        }
-      }}
-        />
-           <MapView showsUserLocation={true} style={styles.map}
-           region={location}
-           ></MapView>
+            <GooglePlacesAutocomplete
+                placeholder='Search'
+                fetchDetails={true}
+                onPress={(data, details) => {
+                    const point = details.geometry.location
+                    console.log('POINT - ', point);
+                    if (!point) { return };
+                    setLocation({
+                        ...location,
+                        latitude: point.lat,
+                        longitude: point.lng
+                    });
+                    console.log(data, details);
+                }}
+                query={{
+                    key: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
+                    language: 'en',
+                }}
+                styles={{
+                    container: {
+                        flex: 0
+                    },
+                    textInput: {
+                        backgroundColor: 'whitesmoke',
+                        borderRadius: 10
+                    },
+                    textInputContainer: {
+                        backgroundColor: 'white',
+                        padding: 4,
+                    }
+                }}
+            />
+            <MapView showsUserLocation={true} style={styles.map}
+                region={location}
+            ></MapView>
             <View style={styles.btnContainer}>
                 <TouchableOpacity style={styles.btn} onPress={handleBack}>
                     <Text style={styles.btnTxt}>Confirm Location</Text>

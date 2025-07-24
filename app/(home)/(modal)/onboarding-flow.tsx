@@ -4,28 +4,29 @@ import Onboarding from 'react-native-onboarding-swiper';
 import LottieView from 'lottie-react-native';
 import { useNavigation } from 'expo-router';
 import colors from '../../../constants/colors';
-const {width, height} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 import { setItem } from '../../../utils/asyncStorage';
 
 function OnboardingFlow() {
 
     const navigation = useNavigation();
     const complete = async () => {
-       await setItem('isOnboarded', '1');
-       navigation.navigate('index' as never);
+        await setItem('isOnboarded', '1');
+        await setItem('isLoggedIn', '0');
+        navigation.navigate('index' as never);
     };
     return (
         <View style={styles.container}>
             <Onboarding
-            containerStyles={{padding: 15}}
-            onDone={complete}
-            onSkip={complete}
+                containerStyles={{ padding: 15 }}
+                onDone={complete}
+                onSkip={complete}
                 pages={[
                     {
-                    backgroundColor: colors.secondary,
-                    image: <LottieView source={require('../../../assets/lottie/onboarding1.json')} style={styles.img} autoPlay loop />,
-                    title: 'Welcome to Little Lemon',
-                    subtitle: 'Find the wide range of food items and simply order!',
+                        backgroundColor: colors.secondary,
+                        image: <LottieView source={require('../../../assets/lottie/onboarding1.json')} style={styles.img} autoPlay loop />,
+                        title: 'Welcome to Little Lemon',
+                        subtitle: 'Find the wide range of food items and simply order!',
                     },
                     {
                         backgroundColor: colors.primary,

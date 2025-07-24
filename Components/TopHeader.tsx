@@ -6,7 +6,6 @@ import BottomSheet from './BottomSheet';
 import { Link } from 'expo-router';
 import useCartStore from '../store/cartStore';
 import colors from '../constants/colors';
-import { styles } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetScrollable/BottomSheetFlashList';
 
 const SearchHeader = () => {
     const { items } = useCartStore();
@@ -18,17 +17,17 @@ const SearchHeader = () => {
                     <TextInput style={style.searchInput} placeholder='Search'></TextInput>
                 </View>
                 <Link href={'/(modal)/cart'} asChild>
-                <TouchableOpacity style={style.optionsBtn}>
-                    { items > 0 &&
+                    <TouchableOpacity style={style.optionsBtn}>
+                        {items > 0 &&
                             <>
-                            <Text style={style.cartItem}>{items}</Text>
-                            <Ionicons name="cart" size={24} color={colors.secondary}/>
+                                <Text style={style.cartItem}>{items}</Text>
+                                <Ionicons name="cart" size={24} color={colors.secondary} />
                             </>
-                    } 
-                    { items <= 0 &&
-                            <Ionicons name="cart-outline" size={21} color={colors.primary}/>
-                    }
-                </TouchableOpacity>
+                        }
+                        {items <= 0 &&
+                            <Ionicons name="cart-outline" size={21} color={colors.primary} />
+                        }
+                    </TouchableOpacity>
                 </Link>
             </View>
         </View>
@@ -40,33 +39,35 @@ const TopHeader = () => {
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     const openModal = () => {
         bottomSheetRef.current?.present();
-    }; 
-    
-  return (
-    <SafeAreaView style={style.safeContainer}>
-        <BottomSheet ref={bottomSheetRef}/>
-      <View style={style.container}>
-        <TouchableOpacity onPress={openModal}>
-            <Image source={require('../assets/bike.png')} style={style.bikeImg} />
-        </TouchableOpacity>
+    };
 
-        <TouchableOpacity style={style.deliveryContainer} onPress={openModal}>
-            <Text style={style.deliveryTitle}>Delivery • Now</Text> 
-            <View style={style.locationContainer}>
-                <Text style={style.locationTxt}>Pune, India</Text>
-                <Ionicons name="chevron-down" size={21} color={'lightskyblue'}/>
-            </View>       
-        </TouchableOpacity>
-     
+    return (
+        <SafeAreaView style={style.safeContainer}>
+            <BottomSheet ref={bottomSheetRef} />
+            <View style={style.container}>
+                <TouchableOpacity onPress={openModal}>
+                    <Image source={require('../assets/bike.png')} style={style.bikeImg} />
+                </TouchableOpacity>
 
-        <TouchableOpacity style={style.profileBtn}>
-            <Ionicons name="person-outline" size={21} color={'lightskyblue'} />
-        </TouchableOpacity>
-      </View>
+                <TouchableOpacity style={style.deliveryContainer} onPress={openModal}>
+                    <Text style={style.deliveryTitle}>Delivery • Now</Text>
+                    <View style={style.locationContainer}>
+                        <Text style={style.locationTxt}>Pune, India</Text>
+                        <Ionicons name="chevron-down" size={21} color={'lightskyblue'} />
+                    </View>
+                </TouchableOpacity>
 
-      <SearchHeader />
-    </SafeAreaView>
-  )
+                <Link href={'/(modal)/account'} asChild>
+                    <TouchableOpacity>
+                        <Image style={style.avatar} source={require('../assets/Profile.png')} />
+                        {/* <Ionicons name="person-outline" size={21} color={'lightskyblue'} /> */}
+                    </TouchableOpacity>
+                </Link>
+            </View>
+
+            <SearchHeader />
+        </SafeAreaView>
+    )
 }
 
 export default TopHeader;
@@ -130,7 +131,7 @@ const style = StyleSheet.create({
     searchBar: {
         flex: 1,
         flexDirection: 'row',
-        alignItems:'center',
+        alignItems: 'center',
         paddingLeft: 10,
         backgroundColor: 'aliceblue',
         borderRadius: 10,
@@ -148,12 +149,21 @@ const style = StyleSheet.create({
     searchIcon: {
 
     },
-    cartItem: { 
-        position: 'absolute', 
-        padding: 19, 
-        marginTop: -17, 
-        fontSize: 11, 
-        zIndex: 99  
+    cartItem: {
+        position: 'absolute',
+        padding: 19,
+        marginTop: -17,
+        fontSize: 11,
+        zIndex: 99
+    },
+    avatar: {
+        marginTop: 10,
+        height: 40,
+        width: 40,
+        borderRadius: 50,
+        resizeMode: 'cover',
+        borderWidth: 0.3,
+        backgroundColor: 'white',
+        borderColor: colors.primary
     }
-
 });

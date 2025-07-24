@@ -6,19 +6,19 @@ import { Link } from 'expo-router';
 
 
 
-export type Ref = BottomSheetModal; 
-    const BottomSheet = forwardRef<Ref>((props, ref) => {
-    const snapPoint = useMemo(() => ['50%'], []);
-    const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} />, []);
-    const { dismiss } = useBottomSheetModal();
+export type Ref = BottomSheetModal;
+const BottomSheet = forwardRef<Ref>((props, ref) => {
+  const snapPoint = useMemo(() => ['50%'], []);
+  const renderBackdrop = useCallback((props: any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} />, []);
+  const { dismiss } = useBottomSheetModal();
 
   return (
-    <BottomSheetModal  
-    backgroundStyle={{backgroundColor: 'white', borderRadius: 0}}
-    overDragResistanceFactor={0}
-    backdropComponent={renderBackdrop}
-    ref={ref} 
-    snapPoints={snapPoint}>
+    <BottomSheetModal
+      backgroundStyle={{ backgroundColor: 'white', borderRadius: 0 }}
+      overDragResistanceFactor={0}
+      backdropComponent={renderBackdrop}
+      ref={ref}
+      snapPoints={snapPoint}>
       <BottomSheetView style={styles.btmView}>
 
         <View style={styles.toggleContainer}>
@@ -33,33 +33,33 @@ export type Ref = BottomSheetModal;
 
 
         <Text style={styles.subHeader}>Location</Text>
-          <Link href={'/(modal)/location-search'} asChild>
+        <Link href={'/(modal)/location-search'} asChild>
           <TouchableOpacity>
             <View style={styles.subActionContainer}>
-            <Ionicons name="location-outline" size={21} color={'lightskyblue'} />
-            <Text style={styles.subAction}>
-              Current Location
-            </Text>
-            <Ionicons name="chevron-forward" size={21} color={'lightskyblue'} />
+              <Ionicons name="location-outline" size={21} color={'lightskyblue'} />
+              <Text style={styles.subAction}>
+                Current Location
+              </Text>
+              <Ionicons name="chevron-forward" size={21} color={'lightskyblue'} />
             </View>
           </TouchableOpacity>
-          </Link>
+        </Link>
 
-          <Text style={styles.subHeader}>Arrival Time</Text>
-          <Link href={'/'} asChild>
+        <Text style={styles.subHeader}>Arrival Time</Text>
+        <Link href={'/'} asChild>
           <TouchableOpacity>
             <View style={[styles.subActionContainer, styles.lastContainer]}>
-            <Ionicons name="time-outline" size={21} color={'lightskyblue'} />
-            <Text style={styles.subAction}>
-             Now
-            </Text>
-            <Ionicons name="chevron-forward" size={21} color={'lightskyblue'}/>
+              <Ionicons name="time-outline" size={21} color={'lightskyblue'} />
+              <Text style={styles.subAction}>
+                Now
+              </Text>
+              <Ionicons name="chevron-forward" size={21} color={'lightskyblue'} />
             </View>
           </TouchableOpacity>
-          </Link>
+        </Link>
 
-        <TouchableOpacity style={styles.btn} onPress={()  => dismiss() } >
-        <Text style={styles.btnTxt}>Confirm</Text>
+        <TouchableOpacity style={styles.btn} onPress={() => dismiss()} >
+          <Text style={styles.btnTxt}>Confirm</Text>
         </TouchableOpacity>
 
       </BottomSheetView>
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     height: 300
   },
   btn: {
-    
+
   },
   btnTxt: {
     color: 'white'
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     gap: 20,
     padding: 10
   },
-  toggleBtn: {  
+  toggleBtn: {
     fontSize: 48,
     paddingHorizontal: 33,
     borderRadius: 30,
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   togglebtnInActive: {
     backgroundColor: 'lightskyblue'
   },
-  subHeader : {
+  subHeader: {
     fontSize: 16,
     fontWeight: '600',
     alignSelf: 'flex-start',

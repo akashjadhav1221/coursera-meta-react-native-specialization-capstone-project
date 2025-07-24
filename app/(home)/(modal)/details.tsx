@@ -6,7 +6,7 @@ import colors from '../../../constants/colors';
 import { ScrollView } from 'react-native-gesture-handler';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
-import  useCartStore, { Product }  from '../../../store/cartStore';
+import useCartStore, { Product } from '../../../store/cartStore';
 
 const details = () => {
 
@@ -31,41 +31,41 @@ const details = () => {
     navigation.goBack();
   };
 
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            headerTransparent: true,
-            headerTitle: '',
-            headerTintColor: 'red', 
-            headerTitleStyle: {
-              color: '#ffffff',
-              fontSize: 18,
-              fontWeight: 'bold',
-            },
-            headerStyle: {
-              backgroundColor: 'transparent'
-            },
-            headerLeft: () => (
-                <TouchableOpacity onPress={() => ( navigation.goBack() )}>
-                    <Ionicons name='close-outline' size={28} color={ 'white' }/>
-                </TouchableOpacity>
-            )
-        })
-    }, []);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTransparent: true,
+      headerTitle: '',
+      headerTintColor: 'red',
+      headerTitleStyle: {
+        color: '#ffffff',
+        fontSize: 18,
+        fontWeight: 'bold',
+      },
+      headerStyle: {
+        backgroundColor: 'transparent'
+      },
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => (navigation.goBack())}>
+          <Ionicons name='close-outline' size={28} color={'white'} />
+        </TouchableOpacity>
+      )
+    })
+  }, []);
 
   return (
     <View style={styles.container}>
       <ScrollView>
-      <Animated.Image entering={FadeInDown.duration(400).delay(300)} source={{ uri: product.photo}} style={styles.img} />
-      <View style={styles.foodCard}>
+        <Animated.Image entering={FadeInDown.duration(400).delay(300)} source={{ uri: product.photo }} style={styles.img} />
+        <View style={styles.foodCard}>
           <Animated.Text entering={FadeInDown.duration(500).delay(300)} style={styles.foodTitle}>{product.name}</Animated.Text>
           <Animated.Text entering={FadeInDown.duration(500).delay(300)} style={styles.foodDescription} numberOfLines={15}>{product.description}</Animated.Text>
           <Animated.Text entering={FadeInDown.duration(500).delay(300)} style={styles.foodPrice}>$ {product.price}</Animated.Text>
         </View>
       </ScrollView>
       <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.btn} onPress={addToCart}>
-                    <Text style={styles.btnTxt}>Add to Cart</Text>
-                </TouchableOpacity>
+        <TouchableOpacity style={styles.btn} onPress={addToCart}>
+          <Text style={styles.btnTxt}>Add to Cart</Text>
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -85,40 +85,40 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     width: '100%'
-},
+  },
   btn: {
     backgroundColor: colors.primary,
     padding: 16,
     margin: 16,
     alignItems: 'center',
     borderRadius: 8
-},
-btnTxt: {
+  },
+  btnTxt: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16
-},
-foodCard: {
-  padding: 10,
-  maxWidth: '100%',
-  flex: 1
-},
-foodTitle: {
-  color: colors.secondaryOrange,
-  fontSize: 24,
-  fontWeight: 'bold'
-},
-foodDescription: {
-  fontSize: 15,
-  marginTop: 10,
-  textAlign: 'justify'
-},
-foodPrice: {
-  fontSize: 15,
-  marginTop: 10,
-  color: colors.primary,
-  fontWeight: 'bold'
-}
+  },
+  foodCard: {
+    padding: 10,
+    maxWidth: '100%',
+    flex: 1
+  },
+  foodTitle: {
+    color: colors.secondaryOrange,
+    fontSize: 24,
+    fontWeight: 'bold'
+  },
+  foodDescription: {
+    fontSize: 15,
+    marginTop: 10,
+    textAlign: 'justify'
+  },
+  foodPrice: {
+    fontSize: 15,
+    marginTop: 10,
+    color: colors.primary,
+    fontWeight: 'bold'
+  }
 })
 
 export default details;

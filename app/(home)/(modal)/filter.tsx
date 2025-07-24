@@ -10,7 +10,7 @@ interface Category {
   id: number,
   name: string,
   checked?: boolean
-} 
+}
 
 const categories = categoriesData;
 
@@ -19,49 +19,49 @@ const Filter = () => {
   const navigation = useNavigation();
 
   useLayoutEffect(() => {
-      navigation.setOptions({
-           headerLeft: () => (
-                    <TouchableOpacity onPress={() => ( navigation.goBack() )}>
-                        <Ionicons name='close-outline' size={28} color={'lightskyblue'}/>
-                    </TouchableOpacity>
-                )
-      })
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => (navigation.goBack())}>
+          <Ionicons name='close-outline' size={28} color={'lightskyblue'} />
+        </TouchableOpacity>
+      )
+    })
   }, []);
 
   const [fitlerItems, setFilterItems] = useState<Category[]>(categories);
   const clearAll = () => {
     const updatedItems = fitlerItems.map(item => {
-        item.checked = false;
+      item.checked = false;
       return item;
     });
     setFilterItems(updatedItems);
   }
 
-  const renderItem: ListRenderItem<Category> = ({item, index}) => (
+  const renderItem: ListRenderItem<Category> = ({ item, index }) => (
     <View style={styles.listItemView}>
       <Text style={styles.filterTxt}>{item.name}</Text>
       <BouncyCheckbox
-      isChecked={item.checked}
-      size={25}
-      fillColor="lightskyblue"
-      unFillColor="white"
-      useBuiltInState={false}
-      iconStyle={{ borderColor: "aliceblue", borderRadius: 5, borderWidth: 2 }}
-      innerIconStyle={{ borderWidth: 2, borderRadius: 5 }}
-      onPress={(isChecked: boolean) => {
-        const updatedItems = fitlerItems.map(item => {
-          if (item.name === fitlerItems[index].name) {
-            item.checked = !isChecked;
-          }
-          return item;
-        });
-        setFilterItems(updatedItems);
-        console.log('UPDATED ITEMS: ', updatedItems);
-      }}
+        isChecked={item.checked}
+        size={25}
+        fillColor="lightskyblue"
+        unFillColor="white"
+        useBuiltInState={false}
+        iconStyle={{ borderColor: "aliceblue", borderRadius: 5, borderWidth: 2 }}
+        innerIconStyle={{ borderWidth: 2, borderRadius: 5 }}
+        onPress={(isChecked: boolean) => {
+          const updatedItems = fitlerItems.map(item => {
+            if (item.name === fitlerItems[index].name) {
+              item.checked = !isChecked;
+            }
+            return item;
+          });
+          setFilterItems(updatedItems);
+          console.log('UPDATED ITEMS: ', updatedItems);
+        }}
       />
     </View>
   );
-  
+
 
 
   return (
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20
   },
   listItemView: {
-    flexDirection:'row',
+    flexDirection: 'row',
     alignContent: 'center',
     justifyContent: 'space-between',
     padding: 10
