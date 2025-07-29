@@ -1,10 +1,15 @@
-import { View, TextInput, StyleSheet, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, TextInput, StyleSheet, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
+import React, { useState, useLayoutEffect } from 'react'
 import colors from '../constants/colors'
 import { useNavigation } from 'expo-router';
 import { setItem } from '../utils/asyncStorage';
+import * as ImagePicker from 'expo-image-picker';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+
 
 const LoginForm = (props) => {
+
   const { btnTxt } = props;
   const navigation = useNavigation();
 
@@ -17,7 +22,51 @@ const LoginForm = (props) => {
     }
     
   }
+
+  const [image, setImage] = useState<string | null>(null);
+
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ['images'],
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+    
+        console.log(result);
+    
+        if (!result.canceled) {
+          setImage(result.assets[0].uri);
+        }
+      };
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerLeft: () => (
+                <TouchableOpacity onPress={() => (navigation.goBack())}>
+                    <Ionicons name='close-outline' size={28} color={colors.primary} />
+                </TouchableOpacity>
+            )
+        })
+    }, []);
+
   return (
+    <ScrollView>
+      <>
+    <View style={styles.container1}>
+                {
+                    !image && <Image style={styles.avatar} source={require('../assets/Profile.png')} />
+                }
+                {
+                    image && <Image style={styles.avatar} source={{ uri: image }} />
+
+                }
+                
+                <TouchableOpacity style={styles.btn1} onPress={pickImage}>
+                    <Text style={styles.btnTxt1}>Edit Photo</Text>
+                </TouchableOpacity>
+        </View>
     <View>
       <View style={styles.formContainer}>
         <Text>Name<Text style={styles.ast}>*</Text></Text>
@@ -37,6 +86,8 @@ const LoginForm = (props) => {
         </TouchableOpacity>
       </View>
     </View>
+    </>
+    </ScrollView>
   )
 }
 
@@ -78,11 +129,38 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     padding: 10,
     margin: 10,
-    height: 40
+    height: 40,
+    backgroundColor: 'white'
   },
   ast: {
     color: 'red'
-  }
+  },
+  container1: {
+    alignItems: 'center',
+    textAlign: 'center'
+},
+avatar: {
+    margin: 25,
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+    resizeMode: 'cover',
+    borderWidth: 0.5,
+    backgroundColor: 'white',
+    borderColor: colors.primary
+},
+btn1: {
+    backgroundColor: colors.secondaryOrange,
+    padding: 8,
+    margin: 8,
+    alignItems: 'center',
+    borderRadius: 8
+},
+btnTxt1: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: 'white'
+}
 })
 
 export default LoginForm;
