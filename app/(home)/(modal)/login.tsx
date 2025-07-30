@@ -7,7 +7,7 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <Image source={require('../../../assets/img/logo.png')} style={styles.logo} />
-      <Hero />
+      {/* <Hero /> */}
       <LoginForm btnTxt={'Login'} />
     </View>
   )
