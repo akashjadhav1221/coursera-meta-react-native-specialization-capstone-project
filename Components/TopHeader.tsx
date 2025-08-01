@@ -34,8 +34,8 @@ const SearchHeader = () => {
     );
 }
 
-const TopHeader = () => {
-
+const TopHeader = (props) => {
+    const { dbReady } = props;
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     const openModal = () => {
         bottomSheetRef.current?.present();
@@ -57,14 +57,17 @@ const TopHeader = () => {
                     </View>
                 </TouchableOpacity>
 
-                <Link href={'/(modal)/account'} asChild>
+                <Link href={{
+                    pathname: "/(modal)/account",
+                    params: { dbReadyParam: dbReady }
+                }} asChild>
                     <TouchableOpacity>
-                        <Image style={style.avatar} source={require('../assets/Profile.png')} />
-                        {/* <Ionicons name="person-outline" size={21} color={'lightskyblue'} /> */}
+                        {
+                            dbReady ? <Image style={style.avatar} source={require('../assets/Profile.png')} /> : <Ionicons name="person-outline" size={21} color={'lightskyblue'} />
+                        }
                     </TouchableOpacity>
                 </Link>
             </View>
-
             <SearchHeader />
         </SafeAreaView>
     )

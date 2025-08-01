@@ -3,12 +3,13 @@ import React from 'react'
 import Hero from '../../../Components/Hero'
 import LoginForm from '../../../Components/LoginForm'
 
-const Login = () => {
+const Login = (props) => {
+  const { dbReady } = props;
   return (
     <View style={styles.container}>
       <Image source={require('../../../assets/img/logo.png')} style={styles.logo} />
       {/* <Hero /> */}
-      <LoginForm btnTxt={'Login'} />
+      <LoginForm dbReady={dbReady} btnTxt={'Login'} />
     </View>
   )
 }

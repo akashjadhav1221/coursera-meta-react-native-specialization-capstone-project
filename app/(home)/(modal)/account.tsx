@@ -1,8 +1,9 @@
 import LoginForm from '../../../Components/LoginForm'
 
-const Account = () => {
+const Account = (props) => {
+    const { dbReady } = props;
     return (
-            <LoginForm btnTxt={'Update Profile'} />
+            <LoginForm dbReady={dbReady} btnTxt={'Update Profile'} />
     )
 }
 

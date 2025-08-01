@@ -6,14 +6,14 @@ import FoodItems from '../../Components/FoodItems';
 import { useNavigation } from 'expo-router';
 import TopHeader from '../../Components/TopHeader';
 import Hero from '../../Components/Hero';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function Index() {
-
+    const { dbReady } = useLocalSearchParams();
     const navigation = useNavigation();
-
     useLayoutEffect(() => {
         navigation.setOptions({
-            header: () => <TopHeader />
+            header: () => <TopHeader dbReady={dbReady}/>
         });
     }, []);
 

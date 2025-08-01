@@ -1,34 +1,131 @@
-import { View, TextInput, StyleSheet, Text, TouchableOpacity, Image, ScrollView } from 'react-native'
-import React, { useState, useLayoutEffect } from 'react'
+import { View, TextInput, StyleSheet, Text, TouchableOpacity, Image, ScrollView, Alert } from 'react-native'
+import React, { useState, useLayoutEffect, useEffect } from 'react'
 import colors from '../constants/colors'
 import { useNavigation } from 'expo-router';
 import { setItem } from '../utils/asyncStorage';
 import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useSQLiteContext } from 'expo-sqlite';
+import { useLocalSearchParams } from 'expo-router';
 
-
+interface formData {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  postal_code: string;
+  image: string;
+}
 
 const LoginForm = (props) => {
 
+  const { dbReadyParam } = useLocalSearchParams();
+  const { dbReady } = props;
   const { btnTxt } = props;
+
+  const [image, setImage] = useState<string | null>(null);
+  const [form, setForm] = useState<formData>({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    postal_code: '',
+    image: 'TEST'
+  });
+
   const navigation = useNavigation();
 
-  const login = async () => {
-    await setItem('isLoggedIn', '1');
-    if (btnTxt === 'Update Profile') {
-      navigation.goBack();
+  const db = useSQLiteContext();
+
+  useEffect(() => {
+    let isMounted = true;
+    console.log('DB READY - ', dbReady);
+    console.log('DB READY PARAM - ', dbReadyParam);
+
+    const getUser = async () => {
+
+      if (btnTxt === 'Update Profile') {
+        if (!dbReadyParam) return;
+      } else {
+        if (!dbReady) return;
+      }
+
+      try {
+        const result = await db.getAllAsync<formData>(`SELECT * FROM USER`);
+        console.log('RESULT - ', result[0]);
+        if (isMounted && result && result.length > 0) {
+          setForm(result[0]);
+        }
+        console.log('USER RESULT - ', form);
+      } catch (e) {
+        console.log('DB ERROR -', e);
+      } finally {
+        console.log('DB SUCCESS');
+      }
+    }
+
+    getUser();
+
+    return () => {
+      isMounted = false;
+    };
+
+  }, [dbReady]);
+
+
+  const validateForm = () => {
+    if (!form.name || !form.email || !form.phone || !form.address || !form.postal_code || !form.image) {
+      return false;
     } else {
-      navigation.navigate('index' as never);
+      return true;
+    }
+  }
+
+  const login = async () => {
+    const validated = validateForm();
+    if (validated) {
+
+      if (btnTxt === 'Update Profile') {
+        //UPDATE PROFILE
+        try {
+          await db.runAsync(
+            'UPDATE USER SET name = ?, email = ?, phone = ?, address = ?, postal_code = ?, image = ? WHERE id = 1',
+            [form.name, form.email, form.phone, form.address, form.postal_code, form.image]
+          );
+          Alert.alert('Success', 'User details updated successfully');
+        } catch (e) {
+          console.log('USER TABLE ENTRY UPDATE ERROR - ', e);
+          Alert.alert('Error', ' Something went wrong - ' + e.message);
+        } finally {
+          navigation.goBack();
+        }
+      } else {
+        //NEW PROFILE
+        try {
+          await db.runAsync(
+            'INSERT INTO USER (name, email, phone, address, postal_code, image) VALUES (?,?,?,?,?,?)',
+            [form.name, form.email, form.phone, form.address, form.postal_code, form.image]
+          );
+          Alert.alert('Success', 'User details added successfully');
+        } catch (e) {
+          console.log('USER TABLE ENTRY ERROR - ', e);
+          Alert.alert('Error', ' Something went wrong - ' + e.message);
+        } finally {
+          await setItem('isLoggedIn', '1');
+          navigation.navigate('index' as never);
+        }
+      }
+    } else {
+      Alert.alert('Error', 'All fields are required');
+      return;
     }
 
   }
 
-  const [image, setImage] = useState<string | null>(null);
-
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -36,8 +133,9 @@ const LoginForm = (props) => {
 
     console.log(result);
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       setImage(result.assets[0].uri);
+      setForm({ ...form, image: result.assets[0].uri });
     }
   };
 
@@ -70,15 +168,53 @@ const LoginForm = (props) => {
         <View>
           <View style={styles.formContainer}>
             <Text>Name<Text style={styles.ast}>*</Text></Text>
-            <TextInput autoCapitalize='none' autoCorrect={false} placeholder='John Appleseed' style={styles.forTxtName} />
+            <TextInput
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholder='John Appleseed'
+              style={styles.forTxtName}
+              value={form.name}
+              onChangeText={text => setForm({ ...form, name: text })}
+            />
             <Text>Email<Text style={styles.ast}>*</Text></Text>
-            <TextInput autoCapitalize='none' autoCorrect={false} placeholder='email@examle.com' keyboardType='email-address' style={styles.forTxtName} />
+            <TextInput
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholder='email@examle.com'
+              keyboardType='email-address'
+              style={styles.forTxtName}
+              value={form.email}
+              onChangeText={text => setForm({ ...form, email: text })}
+            />
             <Text>Phone<Text style={styles.ast}>*</Text></Text>
-            <TextInput autoCapitalize='none' autoCorrect={false} placeholder='+1 111 111 111' keyboardType='numeric' style={styles.forTxtName} />
+            <TextInput
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholder='+1 111 111 111'
+              keyboardType='numeric'
+              style={styles.forTxtName}
+              value={form.phone}
+              onChangeText={text => setForm({ ...form, phone: text })}
+            />
             <Text>Address<Text style={styles.ast}>*</Text></Text>
-            <TextInput autoCapitalize='none' autoCorrect={false} placeholder='CZ48, New York' style={styles.forTxtName} />
+            <TextInput
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholder='CZ48, New York'
+              style={styles.forTxtName}
+              value={form.address}
+              onChangeText={text => setForm({ ...form, address: text })}
+            />
             <Text>Postal Code<Text style={styles.ast}>*</Text></Text>
-            <TextInput autoCapitalize='none' autoCorrect={false} placeholder='07008' keyboardType='numeric' style={styles.forTxtName} />
+            <TextInput
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholder='07008'
+              keyboardType='numeric'
+              style={styles.forTxtName}
+              value={form.postal_code}
+              onChangeText={text => setForm({ ...form, postal_code: text })}
+            />
           </View>
           <View style={styles.btnContainer}>
             <TouchableOpacity style={styles.btn} onPress={login}>

@@ -6,11 +6,13 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import OnboardingFlow from './(modal)/onboarding-flow';
 import Login from './(modal)/login';
+import { SQLiteProvider } from 'expo-sqlite';
 
 export default function Layout() {
 
     const [isOnboarded, setIsOnboarded] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(null);
+    const [dbReady, setDbReady] = useState(false);
 
     useEffect(() => {
         checkifOnboarded();
@@ -37,65 +39,85 @@ export default function Layout() {
 
     if (isOnboarded === null || isOnboarded === undefined) {
         return null;
-    }
-
-    if (isOnboarded && isLoggedIn) {
+    } else {
         return (
             <GestureHandlerRootView style={{ flex: 1 }}>
                 <BottomSheetModalProvider>
-                    <Stack>
-                        <Stack.Screen name="index" />
-                        <Stack.Screen name="(modal)/filter"
-                            options={{
-                                presentation: 'modal',
-                                headerTitle: 'Filter',
-                                headerShadowVisible: false,
-                                headerStyle: {
-                                    backgroundColor: 'transparent'
-                                }
-                            }} />
-                        <Stack.Screen name='(modal)/cart'
-                            options={{
-                                presentation: 'fullScreenModal',
-                                headerTitle: 'Cart'
-                            }}
-                        />
-                        <Stack.Screen name="(modal)/location-search"
-                            options={{
-                                presentation: 'modal',
-                                headerTitle: 'Location Search'
-                            }}
-                        >
-                        </Stack.Screen>
-                        <Stack.Screen name="(modal)/details"
-                            options={{
-                                presentation: 'modal',
-                                headerTitle: 'Details'
-                            }}
-                        >
-                        </Stack.Screen>
-                        <Stack.Screen name="(modal)/account"
-                            options={{
-                                presentation: 'modal',
-                                headerTitle: 'Profile'
-                            }}
-                        >
-                        </Stack.Screen>
-                    </Stack>
+                    <SQLiteProvider
+                        databaseName={'little-lemon.db'}
+                        onInit={async (db) => {
+                            await db.execAsync(
+                            `
+                            CREATE TABLE IF NOT EXISTS USER 
+                            (
+                            id INTEGER PRIMARY KEY NOT NULL, 
+                            name TEXT NOT NULL, 
+                            email TEXT NOT NULL,
+                            phone TEXT NOT NULL,
+                            address TEXT NOT NULL,
+                            postal_code TEXT NOT NULL,
+                            image TEXT NOT NULL
+                            );
+                            PRAGMA journal_mode = WAL;
+                            `
+                            );
+                            setDbReady(true);
+                        }}
+                        options={{ useNewConnection: true }}
+                    >
+                        {
+                            dbReady ? (isOnboarded && isLoggedIn ? (
+                                <Stack>
+                                    <Stack.Screen name="index" initialParams={{ dbReady }} />
+                                    <Stack.Screen name="(modal)/filter"
+                                        options={{
+                                            presentation: 'modal',
+                                            headerTitle: 'Filter',
+                                            headerShadowVisible: false,
+                                            headerStyle: {
+                                                backgroundColor: 'transparent'
+                                            }
+                                        }} />
+                                    <Stack.Screen name='(modal)/cart'
+                                        options={{
+                                            presentation: 'fullScreenModal',
+                                            headerTitle: 'Cart'
+                                        }}
+                                    />
+                                    <Stack.Screen name="(modal)/location-search"
+                                        options={{
+                                            presentation: 'modal',
+                                            headerTitle: 'Location Search'
+                                        }}
+                                    >
+                                    </Stack.Screen>
+                                    <Stack.Screen name="(modal)/details"
+                                        options={{
+                                            presentation: 'modal',
+                                            headerTitle: 'Details'
+                                        }}
+                                    >
+                                    </Stack.Screen>
+                                    <Stack.Screen name="(modal)/account"
+                                        initialParams={{ dbReady: dbReady }}
+                                        options={{
+                                            presentation: 'modal',
+                                            headerTitle: 'Profile'
+                                        }}
+                                    >
+                                    </Stack.Screen>
+                                </Stack>
+                            ) : !isOnboarded ? (
+                                <OnboardingFlow />
+                            ) : (
+                                <Login dbReady={dbReady} />
+                            )) : null
+                        }
+                    </SQLiteProvider>
                 </BottomSheetModalProvider>
             </GestureHandlerRootView>
         )
-    } else if (!isOnboarded) {
-        return (
-            <>
-                <OnboardingFlow />
-            </>
-        )
-    } else if (isOnboarded && !isLoggedIn) {
-        return (
-            <>
-                <Login />
-            </>
-        );
     }
+
+
 }
