@@ -58,9 +58,15 @@ export default function Layout() {
                             postal_code TEXT NOT NULL,
                             image TEXT NOT NULL
                             );
+                            CREATE TABLE IF NOT EXISTS CATEGORIES 
+                            (
+                            id INTEGER PRIMARY KEY NOT NULL, 
+                            name TEXT NOT NULL,
+                            checked BOOLEAN NOT NULL
+                            );
                             PRAGMA journal_mode = WAL;
                             `
-                            );
+                            ),
                             setDbReady(true);
                         }}
                         options={{ useNewConnection: true }}
