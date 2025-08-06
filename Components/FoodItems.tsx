@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, Image, TouchableOpacity, SectionList, Alert, ActivityIndicator } from 'react-native'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import colors from '../constants/colors';
 import masterData from '../assets/data/master-data.json';
 import { Link, useNavigation } from 'expo-router';
@@ -18,26 +18,26 @@ interface Dishes {
 }
 
 const FoodItems = (props) => {
-
   const dishesJSON = masterData.categories.flatMap(category =>
-        category.dishes.map(dish => ({
-          id: dish.id,
-          name: dish.name,
-          description: dish.description,
-          price: Number(dish.price),
-          photo: dish.photo,
-          reference_name: dish.reference_name,
-          category_id: Number(category.id)
-        }))
+    category.dishes.map(dish => ({
+      id: dish.id,
+      name: dish.name,
+      description: dish.description,
+      price: Number(dish.price),
+      photo: dish.photo,
+      reference_name: dish.reference_name,
+      category_id: Number(category.id)
+    }))
   );
 
   const { dbReady } = props;
   const db = useSQLiteContext();
 
   const [dishes, setDishes] = useState<Dishes[] | null>(null);
+  const [dishesCopy, setDishesCopy] = useState<Dishes[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
-  const { categoriesReady, setFoodItemsReady } = useDbStore();
+  const { categoriesReady, setFoodItemsReady, selectedCategory } = useDbStore();
 
 
   useEffect(() => {
@@ -51,6 +51,7 @@ const FoodItems = (props) => {
         console.log('DISHES RESULT - ', result.length);
         if (isMounted && result && result.length > 0) {
           setDishes(result);
+          setDishesCopy(result);
           setFoodItemsReady(true);
         } else if (isMounted && result && result.length === 0) {
           console.log('NO DISHES FOUND');
@@ -74,12 +75,30 @@ const FoodItems = (props) => {
 
   }, [dbReady, categoriesReady]);
 
+  useEffect(() => {
+  if (!dishesCopy || dishesCopy.length <= 0) return;
+  
+  console.log('Filtering dishes for category:', selectedCategory);
+  
+  if (selectedCategory === 1) {
+    // Show all dishes
+    setDishes([...dishesCopy]);
+  } else {
+    // Filter by category_id, not dish id
+    const filteredDishes = dishesCopy.filter(dish => 
+      Number(dish.category_id) === Number(selectedCategory)
+    );
+    console.log(`Found ${filteredDishes.length} dishes for category ${selectedCategory}`);
+    setDishes(filteredDishes);
+  }
+}, [selectedCategory, dishesCopy]);
+
 
   const insertDishes = async () => {
     if (!dishesJSON || dishesJSON.length <= 0) return;
     console.log('DISHES JSON -', dishesJSON.length);
     try {
-      
+
       await db.execAsync('BEGIN TRANSACTION');
 
       const stmt = await db.prepareAsync(
@@ -102,6 +121,7 @@ const FoodItems = (props) => {
       const result = await db.getAllAsync<Dishes>('SELECT * FROM DISHES');
       if (result.length > 0) {
         setDishes(result);
+        setDishesCopy(result);
         setFoodItemsReady(true);
       }
     } catch (e) {

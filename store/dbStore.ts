@@ -1,19 +1,11 @@
 import { create } from 'zustand';
 
-export interface Product {
-    id: number;
-    name: string;
-    reference_name: string;
-    description: string;
-    price: number;
-    photo: string;
-    quantity: number;
-}
-
 export interface DBState {
+    selectedCategory: number;
     categoriesReady: boolean;
     foodItemsReady: boolean;
     cartReady: boolean;
+    setSelectedCategory: (category: number) => void;
     setCategoriesReady: (status: boolean) => void;
     setFoodItemsReady: (status: boolean) => void;
     setCartReady: (status: boolean) => void;
@@ -21,9 +13,16 @@ export interface DBState {
 }
 
 const useDbStore = create<DBState>()((set) => ({
+    selectedCategory: 1,
     categoriesReady: false,
     foodItemsReady: false,
     cartReady: false,
+    setSelectedCategory: (categoryId) => {
+         set(() => ({
+            selectedCategory: categoryId,
+        }));
+         console.log('SELECTED CATEGORY - ', categoryId)
+    },
     setCategoriesReady: (status) => {
         set(() => ({
             categoriesReady: status

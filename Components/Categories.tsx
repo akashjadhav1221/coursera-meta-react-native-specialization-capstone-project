@@ -16,7 +16,7 @@ const Categories = (props) => {
     const { dbReady } = props;
     const db = useSQLiteContext();
     const [categories, setCategories] = useState(null);
-    const { setCategoriesReady } = useDbStore();
+    const { setCategoriesReady, setSelectedCategory, selectedCategory } = useDbStore();
 
 
     useEffect(() => {
@@ -26,7 +26,7 @@ const Categories = (props) => {
         const getCategories = async () => {
             try {
                 const result = await db.getAllAsync<Category>(`SELECT * FROM CATEGORIES`);
-                console.log('CATEGORIES RESULT - ', result.length);
+                console.log('CATEGORIES RESULT - ', result);
                 if (isMounted && result && result.length > 0) {
                     setCategories(result);
                     setCategoriesReady(true);
@@ -92,7 +92,9 @@ const Categories = (props) => {
             { 
             (categories && categories.length > 0) &&
                 categories.map((category, index) => (
-                    <TouchableOpacity key={index} style={styles.categoryBtn}>
+                    <TouchableOpacity key={index} style={ (selectedCategory === category.id) ? styles.selectedCategoryBtn : styles.categoryBtn} onPress={() => {
+                        setSelectedCategory(category.id)
+                    }}>
                         <Text style={styles.categoryBtnTxt}>{category.name}</Text>
                     </TouchableOpacity>
                 ))
@@ -110,6 +112,13 @@ const styles = StyleSheet.create({
     },
     categoryBtn: {
         backgroundColor: colors.secondaryGrey,
+        padding: 10,
+        margin: 5,
+        alignItems: 'center',
+        borderRadius: 15
+    },
+    selectedCategoryBtn: {
+        backgroundColor: colors.secondary,
         padding: 10,
         margin: 5,
         alignItems: 'center',

@@ -1,7 +1,7 @@
 {
   "categories": [
     {
-      "id": 1,
+      "id": 2,
       "name": "Appetizer",
       "checked": false,
       "dishes": [
@@ -40,7 +40,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": 3,
       "name": "Main",
       "checked": false,
       "dishes": [
@@ -79,7 +79,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": 4,
       "name": "Desserts",
       "checked": false,
       "dishes": [
@@ -118,7 +118,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": 5,
       "name": "Starters",
       "checked": false,
       "dishes": [
@@ -157,7 +157,7 @@
       ]
     },
     {
-      "id": 5,
+      "id": 6,
       "name": "Sides",
       "checked": false,
       "dishes": [
@@ -196,7 +196,7 @@
       ]
     },
     {
-      "id": 6,
+      "id": 7,
       "name": "Continental",
       "checked": false,
       "dishes": [
@@ -235,7 +235,7 @@
       ]
     },
     {
-      "id": 7,
+      "id": 8,
       "name": "Indian",
       "checked": false,
       "dishes": [
@@ -274,7 +274,7 @@
       ]
     },
     {
-      "id": 8,
+      "id": 9,
       "name": "Chinese",
       "checked": false,
       "dishes": [
