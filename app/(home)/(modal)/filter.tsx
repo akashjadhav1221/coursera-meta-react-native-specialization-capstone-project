@@ -56,7 +56,6 @@ const Filter = () => {
             return item;
           });
           setFilterItems(updatedItems);
-          console.log('UPDATED ITEMS: ', updatedItems);
         }}
       />
     </View>

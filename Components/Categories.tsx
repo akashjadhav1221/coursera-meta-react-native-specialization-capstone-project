@@ -26,17 +26,14 @@ const Categories = (props) => {
         const getCategories = async () => {
             try {
                 const result = await db.getAllAsync<Category>(`SELECT * FROM CATEGORIES`);
-                console.log('CATEGORIES RESULT - ', result);
                 if (isMounted && result && result.length > 0) {
                     setCategories(result);
                     setCategoriesReady(true);
                 } else if (isMounted && result && result.length === 0) {
-                    console.log('NO CATEGORIES FOUND');
                     insertCategories();
                 }
-                console.log('CATEGORIES RESULT - ', categories);
             } catch (e) {
-                 setCategoriesReady(false);
+                setCategoriesReady(false);
                 console.log('CATEGORY DB ERROR -', e);
             } finally {
                 console.log('CATEGORY DB SUCCESS');
@@ -59,17 +56,14 @@ const Categories = (props) => {
 
             await db.execAsync('BEGIN TRANSACTION');
 
-            // Create the insert statement once
             const stmt = await db.prepareAsync(
                 'INSERT INTO CATEGORIES (name, checked) VALUES (?,?)'
             );
 
-            // Insert all categories
             for (const category of categoriesJSON) {
                 await stmt.executeAsync([category.name, category.checked]);
             }
 
-            // Commit the transaction
             await db.execAsync('COMMIT');
 
             const result = await db.getAllAsync<Category>('SELECT * FROM CATEGORIES');
@@ -79,20 +73,19 @@ const Categories = (props) => {
             }
         } catch (e) {
             setCategoriesReady(false);
-            console.log('CATEGORY TABLE ENTRY ERROR - ', e);
             Alert.alert('Error', ' Something went wrong - ' + e.message);
         } finally {
-            console.log('CATEGORY TABLE ENTRY SUCCESS - ');
+            console.log('CATEGORY TABLE ENTRY SUCCESS');
         }
     }
 
 
     return (
         <ScrollView horizontal={true} style={styles.scrollViewContainer} showsHorizontalScrollIndicator={false}>
-            { 
-            (categories && categories.length > 0) &&
+            {
+                (categories && categories.length > 0) &&
                 categories.map((category, index) => (
-                    <TouchableOpacity key={index} style={ (selectedCategory === category.id) ? styles.selectedCategoryBtn : styles.categoryBtn} onPress={() => {
+                    <TouchableOpacity key={index} style={(selectedCategory === category.id) ? styles.selectedCategoryBtn : styles.categoryBtn} onPress={() => {
                         setSelectedCategory(category.id)
                     }}>
                         <Text style={styles.categoryBtnTxt}>{category.name}</Text>

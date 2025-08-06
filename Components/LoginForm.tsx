@@ -40,8 +40,6 @@ const LoginForm = (props) => {
 
   useEffect(() => {
     let isMounted = true;
-    console.log('DB READY - ', dbReady);
-    console.log('DB READY PARAM - ', dbReadyParam);
 
     const getUser = async () => {
 
@@ -53,11 +51,9 @@ const LoginForm = (props) => {
 
       try {
         const result = await db.getAllAsync<formData>(`SELECT * FROM USER`);
-        console.log('USER RESULT - ', result[0]);
         if (isMounted && result && result.length > 0) {
           setForm(result[0]);
         }
-        console.log('USER RESULT - ', form);
       } catch (e) {
         console.log('DB ERROR -', e);
       } finally {
@@ -88,7 +84,6 @@ const LoginForm = (props) => {
 
       if (btnTxt === 'Update Profile') {
         //UPDATE PROFILE
-        console.log('UPDATE PROFILE FORM IMAGE - ', form.image);
         try {
           await db.runAsync(
             'UPDATE USER SET name = ?, email = ?, phone = ?, address = ?, postal_code = ?, image = ? WHERE id = 1',
@@ -96,7 +91,6 @@ const LoginForm = (props) => {
           );
           Alert.alert('Success', 'User details updated successfully');
         } catch (e) {
-          console.log('USER TABLE ENTRY UPDATE ERROR - ', e);
           Alert.alert('Error', ' Something went wrong - ' + e.message);
         } finally {
           navigation.goBack();
@@ -110,7 +104,6 @@ const LoginForm = (props) => {
           );
           Alert.alert('Success', 'User details added successfully');
         } catch (e) {
-          console.log('USER TABLE ENTRY ERROR - ', e);
           Alert.alert('Error', ' Something went wrong - ' + e.message);
         } finally {
           await setItem('isLoggedIn', '1');
@@ -125,15 +118,12 @@ const LoginForm = (props) => {
   }
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.4,
     });
-
-    console.log(result);
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       await saveImageLocally(result.assets[0].uri);
@@ -156,7 +146,6 @@ const LoginForm = (props) => {
 
   const updateAvatar = async () => {
     if (form.image) {
-      // Check if file still exists
       const fileInfo = await FileSystem.getInfoAsync(form.image);
       console.log('FIlE INFO -', fileInfo);
       if (fileInfo.exists) {
@@ -168,11 +157,9 @@ const LoginForm = (props) => {
 
   const saveImageLocally = async (imageUri) => {
     try {
-      // Create a unique filename
       const filename = `avatar_${Date.now()}.jpg`;
       const localUri = `${FileSystem.documentDirectory}${filename}`;
-      console.log('Image saved locally:', localUri);
-      // Copy the image to app's document directory
+
       await FileSystem.copyAsync({
         from: imageUri,
         to: localUri,

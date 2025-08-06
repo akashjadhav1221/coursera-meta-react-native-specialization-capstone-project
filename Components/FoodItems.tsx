@@ -48,22 +48,17 @@ const FoodItems = (props) => {
       setIsLoading(true);
       try {
         const result = await db.getAllAsync<Dishes>(`SELECT * FROM DISHES`);
-        console.log('DISHES RESULT - ', result.length);
         if (isMounted && result && result.length > 0) {
           setDishes(result);
           setDishesCopy(result);
           setFoodItemsReady(true);
         } else if (isMounted && result && result.length === 0) {
-          console.log('NO DISHES FOUND');
           await insertDishes();
         }
-        console.log('DISHES RESULT - ', dishes);
       } catch (e) {
         setFoodItemsReady(false);
-        console.log('DISHES DB ERROR -', e);
       } finally {
         setIsLoading(false);
-        console.log('DISHES DB SUCCESS');
       }
     }
 
@@ -78,24 +73,18 @@ const FoodItems = (props) => {
   useEffect(() => {
     if (!dishesCopy || dishesCopy.length <= 0) return;
 
-    console.log('Filtering dishes for category:', selectedCategory);
-
     if (selectedCategory === 1) {
-      // Show all dishes
       setDishes([...dishesCopy]);
     } else {
-      // Filter by category_id, not dish id
       const filteredDishes = dishesCopy.filter(dish =>
         Number(dish.category_id) === Number(selectedCategory)
       );
-      console.log(`Found ${filteredDishes.length} dishes for category ${selectedCategory}`);
       setDishes(filteredDishes);
     }
   }, [selectedCategory, dishesCopy]);
 
   useEffect(() => {
-
-    console.log('Filtering dishes for search query:', searchQuery);
+    if (!dishesCopy || dishesCopy.length <= 0) return;
 
     const filteredDishes = dishesCopy.filter(dish => {
       const matchesSearch = searchQuery
@@ -103,7 +92,6 @@ const FoodItems = (props) => {
         : true;
       return matchesSearch;
     });
-    console.log(`Found ${filteredDishes.length} dishes for all`);
     setDishes(filteredDishes);
 
   }, [searchQuery]);
@@ -111,7 +99,6 @@ const FoodItems = (props) => {
 
   const insertDishes = async () => {
     if (!dishesJSON || dishesJSON.length <= 0) return;
-    console.log('DISHES JSON -', dishesJSON.length);
     try {
 
       await db.execAsync('BEGIN TRANSACTION');
@@ -141,7 +128,6 @@ const FoodItems = (props) => {
       }
     } catch (e) {
       setFoodItemsReady(false);
-      console.log('DISHES TABLE ENTRY ERROR - ', e);
       Alert.alert('Error', 'Something went wrong - ' + e.message);
     }
   };

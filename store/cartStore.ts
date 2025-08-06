@@ -16,7 +16,7 @@ export interface CartState {
     total: number;
     addProduct: (product: Product) => void;
     reduceProduct: (product: Product) => void;
-    clearCart: () => void; 
+    clearCart: () => void;
 }
 
 const useCartStore = create<CartState>()((set) => ({
@@ -25,15 +25,15 @@ const useCartStore = create<CartState>()((set) => ({
     total: 0,
     addProduct: (product) => {
         set((state) => {
-            state.items +=1;
+            state.items += 1;
             state.total += product.price;
-            const hasProduct = state.products.find((p) =>  p.id === product.id )
+            const hasProduct = state.products.find((p) => p.id === product.id)
 
             if (hasProduct) {
                 hasProduct.quantity += 1;
                 return { products: [...state.products] }
             } else {
-                return { products: [...state.products, {...product}] }
+                return { products: [...state.products, { ...product }] }
             }
         });
     },
@@ -45,10 +45,10 @@ const useCartStore = create<CartState>()((set) => ({
                 products: state.products.map((p) => {
                     if (p.id === product.id) {
                         p.quantity -= 1;
-                    } 
+                    }
                     return p;
                 })
-                .filter((p) =>  p.quantity > 0 )
+                    .filter((p) => p.quantity > 0)
             }
         })
     },

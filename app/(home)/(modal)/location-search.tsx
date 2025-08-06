@@ -36,14 +36,12 @@ const LocationSearch = () => {
                 fetchDetails={true}
                 onPress={(data, details) => {
                     const point = details.geometry.location
-                    console.log('POINT - ', point);
                     if (!point) { return };
                     setLocation({
                         ...location,
                         latitude: point.lat,
                         longitude: point.lng
                     });
-                    console.log(data, details);
                 }}
                 query={{
                     key: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,

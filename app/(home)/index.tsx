@@ -13,7 +13,7 @@ export default function Index() {
     const navigation = useNavigation();
     useLayoutEffect(() => {
         navigation.setOptions({
-            header: () => <TopHeader dbReady={dbReady}/>
+            header: () => <TopHeader dbReady={dbReady} />
         });
     }, []);
 

@@ -11,7 +11,7 @@ export interface DBState {
     setCategoriesReady: (status: boolean) => void;
     setFoodItemsReady: (status: boolean) => void;
     setCartReady: (status: boolean) => void;
-    clearDB: () => void; 
+    clearDB: () => void;
 }
 
 const useDbStore = create<DBState>()((set) => ({
@@ -21,10 +21,9 @@ const useDbStore = create<DBState>()((set) => ({
     foodItemsReady: false,
     cartReady: false,
     setSelectedCategory: (categoryId) => {
-         set(() => ({
+        set(() => ({
             selectedCategory: categoryId,
         }));
-         console.log('SELECTED CATEGORY - ', categoryId)
     },
     setCategoriesReady: (status) => {
         set(() => ({
@@ -45,7 +44,6 @@ const useDbStore = create<DBState>()((set) => ({
         set(() => ({
             searchQuery: query
         }));
-        console.log('SEARCH QUERY -', query);
     },
     clearDB: () => {
         set({

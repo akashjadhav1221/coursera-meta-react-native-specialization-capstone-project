@@ -46,9 +46,9 @@ export default function Layout() {
                     <SQLiteProvider
                         databaseName={'little-lemon.db'}
                         onInit={async (db) => {
-                            try { 
-                            await db.execAsync(
-                            `
+                            try {
+                                await db.execAsync(
+                                    `
                             PRAGMA journal_mode = WAL;
                             CREATE TABLE IF NOT EXISTS USER 
                             (
@@ -77,8 +77,8 @@ export default function Layout() {
                             category_id INTEGER NOT NULL
                             );
                             `
-                            );
-                            setDbReady(true);
+                                );
+                                setDbReady(true);
 
                             } catch (e) {
                                 console.log('Database initialization error:', e);
@@ -139,6 +139,5 @@ export default function Layout() {
             </GestureHandlerRootView>
         )
     }
-
 
 }

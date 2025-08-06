@@ -72,7 +72,6 @@ export default BottomSheet;
 const styles = StyleSheet.create({
   btmView: {
     flex: 1,
-    //alignItems: 'center',
     height: 300
   },
   btn: {
@@ -105,8 +104,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     alignSelf: 'flex-start',
-    marginLeft: 20,
-    //marginTop: 20
+    marginLeft: 20
   },
   subActionContainer: {
     flexDirection: 'row',
