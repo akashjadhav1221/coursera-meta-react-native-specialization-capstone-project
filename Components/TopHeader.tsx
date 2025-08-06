@@ -6,15 +6,18 @@ import BottomSheet from './BottomSheet';
 import { Link } from 'expo-router';
 import useCartStore from '../store/cartStore';
 import colors from '../constants/colors';
+import useDbStore from '../store/dbStore';
 
 const SearchHeader = () => {
     const { items } = useCartStore();
+    const { searchQuery, setSearchQuery } = useDbStore();
     return (
         <View style={style.searchContainer}>
             <View style={style.searchSection}>
                 <View style={style.searchBar}>
                     <Ionicons name="search-outline" size={21} color={'#424242'} />
-                    <TextInput style={style.searchInput} placeholder='Search'></TextInput>
+                    <TextInput value={searchQuery} onChangeText={setSearchQuery} style={style.searchInput} placeholder='Search Dishes' ></TextInput>
+                    <Ionicons name="close-outline" size={24} color={'#424242'} style={{marginRight: 5}} onPress={() => setSearchQuery('')} />
                 </View>
                 <Link href={'/(modal)/cart'} asChild>
                     <TouchableOpacity style={style.optionsBtn}>
@@ -148,6 +151,7 @@ const style = StyleSheet.create({
     },
     searchInput: {
         padding: 10,
+        flex: 1,
     },
     cartItem: {
         position: 'absolute',

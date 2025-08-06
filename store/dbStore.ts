@@ -1,10 +1,12 @@
 import { create } from 'zustand';
 
 export interface DBState {
+    searchQuery: string;
     selectedCategory: number;
     categoriesReady: boolean;
     foodItemsReady: boolean;
     cartReady: boolean;
+    setSearchQuery: (query: string) => void;
     setSelectedCategory: (category: number) => void;
     setCategoriesReady: (status: boolean) => void;
     setFoodItemsReady: (status: boolean) => void;
@@ -13,6 +15,7 @@ export interface DBState {
 }
 
 const useDbStore = create<DBState>()((set) => ({
+    searchQuery: '',
     selectedCategory: 1,
     categoriesReady: false,
     foodItemsReady: false,
@@ -38,8 +41,16 @@ const useDbStore = create<DBState>()((set) => ({
             cartReady: status
         }));
     },
+    setSearchQuery: (query) => {
+        set(() => ({
+            searchQuery: query
+        }));
+        console.log('SEARCH QUERY -', query);
+    },
     clearDB: () => {
         set({
+            searchQuery: '',
+            selectedCategory: 1,
             categoriesReady: false,
             foodItemsReady: false,
             cartReady: false

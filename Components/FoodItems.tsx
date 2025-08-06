@@ -37,7 +37,7 @@ const FoodItems = (props) => {
   const [dishesCopy, setDishesCopy] = useState<Dishes[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
-  const { categoriesReady, setFoodItemsReady, selectedCategory } = useDbStore();
+  const { categoriesReady, setFoodItemsReady, selectedCategory, searchQuery } = useDbStore();
 
 
   useEffect(() => {
@@ -76,22 +76,37 @@ const FoodItems = (props) => {
   }, [dbReady, categoriesReady]);
 
   useEffect(() => {
-  if (!dishesCopy || dishesCopy.length <= 0) return;
-  
-  console.log('Filtering dishes for category:', selectedCategory);
-  
-  if (selectedCategory === 1) {
-    // Show all dishes
-    setDishes([...dishesCopy]);
-  } else {
-    // Filter by category_id, not dish id
-    const filteredDishes = dishesCopy.filter(dish => 
-      Number(dish.category_id) === Number(selectedCategory)
-    );
-    console.log(`Found ${filteredDishes.length} dishes for category ${selectedCategory}`);
+    if (!dishesCopy || dishesCopy.length <= 0) return;
+
+    console.log('Filtering dishes for category:', selectedCategory);
+
+    if (selectedCategory === 1) {
+      // Show all dishes
+      setDishes([...dishesCopy]);
+    } else {
+      // Filter by category_id, not dish id
+      const filteredDishes = dishesCopy.filter(dish =>
+        Number(dish.category_id) === Number(selectedCategory)
+      );
+      console.log(`Found ${filteredDishes.length} dishes for category ${selectedCategory}`);
+      setDishes(filteredDishes);
+    }
+  }, [selectedCategory, dishesCopy]);
+
+  useEffect(() => {
+
+    console.log('Filtering dishes for search query:', searchQuery);
+
+    const filteredDishes = dishesCopy.filter(dish => {
+      const matchesSearch = searchQuery
+        ? dish.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
+        : true;
+      return matchesSearch;
+    });
+    console.log(`Found ${filteredDishes.length} dishes for all`);
     setDishes(filteredDishes);
-  }
-}, [selectedCategory, dishesCopy]);
+
+  }, [searchQuery]);
 
 
   const insertDishes = async () => {
@@ -130,7 +145,6 @@ const FoodItems = (props) => {
       Alert.alert('Error', 'Something went wrong - ' + e.message);
     }
   };
-
 
 
   return (
