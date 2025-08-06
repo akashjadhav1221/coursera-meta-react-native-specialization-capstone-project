@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import categoriesData from '../assets/data/data.json';
 import colors from '../constants/colors';
 import { useSQLiteContext } from 'expo-sqlite';
+import useDbStore from '../store/dbStore';
 
 interface Category {
     id: number,
@@ -15,6 +16,8 @@ const Categories = (props) => {
     const { dbReady } = props;
     const db = useSQLiteContext();
     const [categories, setCategories] = useState(null);
+    const { setCategoriesReady } = useDbStore();
+
 
     useEffect(() => {
         if (!dbReady) return;
@@ -23,15 +26,17 @@ const Categories = (props) => {
         const getCategories = async () => {
             try {
                 const result = await db.getAllAsync<Category>(`SELECT * FROM CATEGORIES`);
-                console.log('CATEGORIES RESULT - ', result);
+                console.log('CATEGORIES RESULT - ', result.length);
                 if (isMounted && result && result.length > 0) {
                     setCategories(result);
+                    setCategoriesReady(true);
                 } else if (isMounted && result && result.length === 0) {
                     console.log('NO CATEGORIES FOUND');
                     insertCategories();
                 }
                 console.log('CATEGORIES RESULT - ', categories);
             } catch (e) {
+                 setCategoriesReady(false);
                 console.log('CATEGORY DB ERROR -', e);
             } finally {
                 console.log('CATEGORY DB SUCCESS');
@@ -70,8 +75,10 @@ const Categories = (props) => {
             const result = await db.getAllAsync<Category>('SELECT * FROM CATEGORIES');
             if (result.length > 0) {
                 setCategories(result);
+                setCategoriesReady(true);
             }
         } catch (e) {
+            setCategoriesReady(false);
             console.log('CATEGORY TABLE ENTRY ERROR - ', e);
             Alert.alert('Error', ' Something went wrong - ' + e.message);
         } finally {

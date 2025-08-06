@@ -21,7 +21,7 @@ export default function Index() {
         <SafeAreaView style={styles.container}>
             <Categories dbReady={dbReady} />
             <Hero />
-            <FoodItems />
+            <FoodItems dbReady={dbReady} />
         </SafeAreaView>
     );
 }

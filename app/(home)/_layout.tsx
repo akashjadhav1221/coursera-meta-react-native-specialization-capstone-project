@@ -46,8 +46,10 @@ export default function Layout() {
                     <SQLiteProvider
                         databaseName={'little-lemon.db'}
                         onInit={async (db) => {
+                            try { 
                             await db.execAsync(
                             `
+                            PRAGMA journal_mode = WAL;
                             CREATE TABLE IF NOT EXISTS USER 
                             (
                             id INTEGER PRIMARY KEY NOT NULL, 
@@ -64,10 +66,23 @@ export default function Layout() {
                             name TEXT NOT NULL,
                             checked BOOLEAN NOT NULL
                             );
-                            PRAGMA journal_mode = WAL;
+                            CREATE TABLE IF NOT EXISTS DISHES
+                            (
+                            id INTEGER PRIMARY KEY NOT NULL,
+                            name TEXT NOT NULL,
+                            description TEXT NOT NULL,
+                            price FLOAT NOT NULL,
+                            photo TEXT NOT NULL,
+                            reference_name TEXT NOT NULL,
+                            category_id INTEGER NOT NULL
+                            );
                             `
-                            ),
+                            );
                             setDbReady(true);
+
+                            } catch (e) {
+                                console.log('Database initialization error:', e);
+                            }
                         }}
                         options={{ useNewConnection: true }}
                     >
