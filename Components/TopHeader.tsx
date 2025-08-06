@@ -61,9 +61,9 @@ const TopHeader = (props) => {
                     pathname: "/(modal)/account",
                     params: { dbReadyParam: dbReady }
                 }} asChild>
-                    <TouchableOpacity>
+                    <TouchableOpacity style={{ marginRight: 10 }}>
                         {
-                            dbReady ? <Image style={style.avatar} source={require('../assets/Profile.png')} /> : <Ionicons name="person-outline" size={21} color={'lightskyblue'} />
+                            dbReady ? <Ionicons name="person-outline" size={21} color={'lightskyblue'} /> : <Ionicons name="person-outline" size={21} color={'grey'} />
                         }
                     </TouchableOpacity>
                 </Link>
@@ -148,9 +148,6 @@ const style = StyleSheet.create({
     },
     searchInput: {
         padding: 10,
-    },
-    searchIcon: {
-
     },
     cartItem: {
         position: 'absolute',

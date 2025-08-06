@@ -7,6 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useLocalSearchParams } from 'expo-router';
+import * as FileSystem from 'expo-file-system';
 
 interface formData {
   name: string;
@@ -30,7 +31,7 @@ const LoginForm = (props) => {
     phone: '',
     address: '',
     postal_code: '',
-    image: 'TEST'
+    image: ''
   });
 
   const navigation = useNavigation();
@@ -52,7 +53,7 @@ const LoginForm = (props) => {
 
       try {
         const result = await db.getAllAsync<formData>(`SELECT * FROM USER`);
-        console.log('RESULT - ', result[0]);
+        console.log('USER RESULT - ', result[0]);
         if (isMounted && result && result.length > 0) {
           setForm(result[0]);
         }
@@ -87,6 +88,7 @@ const LoginForm = (props) => {
 
       if (btnTxt === 'Update Profile') {
         //UPDATE PROFILE
+        console.log('UPDATE PROFILE FORM IMAGE - ', form.image);
         try {
           await db.runAsync(
             'UPDATE USER SET name = ?, email = ?, phone = ?, address = ?, postal_code = ?, image = ? WHERE id = 1',
@@ -127,15 +129,14 @@ const LoginForm = (props) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+      aspect: [1, 1],
+      quality: 0.4,
     });
 
     console.log(result);
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImage(result.assets[0].uri);
-      setForm({ ...form, image: result.assets[0].uri });
+      await saveImageLocally(result.assets[0].uri);
     }
   };
 
@@ -149,12 +150,47 @@ const LoginForm = (props) => {
     })
   }, []);
 
+  useLayoutEffect(() => {
+    updateAvatar();
+  }, [form.image]);
+
+  const updateAvatar = async () => {
+    if (form.image) {
+      // Check if file still exists
+      const fileInfo = await FileSystem.getInfoAsync(form.image);
+      console.log('FIlE INFO -', fileInfo);
+      if (fileInfo.exists) {
+        setImage(fileInfo.uri);
+        setForm({ ...form, image: fileInfo.uri });
+      }
+    }
+  }
+
+  const saveImageLocally = async (imageUri) => {
+    try {
+      // Create a unique filename
+      const filename = `avatar_${Date.now()}.jpg`;
+      const localUri = `${FileSystem.documentDirectory}${filename}`;
+      console.log('Image saved locally:', localUri);
+      // Copy the image to app's document directory
+      await FileSystem.copyAsync({
+        from: imageUri,
+        to: localUri,
+      });
+
+      setImage(localUri);
+      setForm({ ...form, image: localUri });
+    } catch (error) {
+      console.error('Error saving image:', error);
+    }
+  };
+
   return (
     <ScrollView>
       <>
         <View style={styles.container1}>
           {
-            !image && <Image style={styles.avatar} source={require('../assets/Profile.png')} />
+            !image && <Ionicons style={styles.person} name="person-outline" size={60} color={colors.primary} />
           }
           {
             image && <Image style={styles.avatar} source={{ uri: image }} />
@@ -272,6 +308,15 @@ const styles = StyleSheet.create({
   container1: {
     alignItems: 'center',
     textAlign: 'center'
+  },
+  person: {
+    margin: 25,
+    padding: 10,
+    borderRadius: 50,
+    resizeMode: 'cover',
+    borderWidth: 0.5,
+    backgroundColor: 'white',
+    borderColor: colors.primary
   },
   avatar: {
     margin: 25,
